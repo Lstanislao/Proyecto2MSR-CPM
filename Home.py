@@ -26,9 +26,9 @@ def activities():
 
 def activity():
     id = input('\nIngrese el identificador de la actividad. (Por ejemplo: "A", "b", "C", "1", "II", "3"\n')
-    name = input('Ingrese el nombre de la actividad. (Por ejemplo: "Limpiar ventanas", "Llevar el carro al taller", "Mezclar el azucar con los huevos"\n')
+    description = input('Ingrese la descripcion de la actividad. (Por ejemplo: "Limpiar ventanas", "Llevar el carro al taller", "Mezclar el azucar con los huevos"\n')
     value = input('Ingrese el valor de la actividad.\n')
-    act = [id, name, int(value)]
+    act = [id, description, int(value)]
     predecesor = []
     pre = input('¿Esta actividad tiene predecesor? \nIngrese una de las siguientes opciones:  \n[1] SI\n[0] NO\n')
 
