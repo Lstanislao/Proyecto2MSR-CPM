@@ -1,64 +1,68 @@
 
 class CPM:
-    # matriz para el forward
+    # Matriz para el forward
     adjMatrixForward = []
-    # matrix para el backward
+    # Matriz para el backward
     adjMatrixBackward = []
-    # tabla resultante despues de las forw y el backw
+    # Tabla resultante despues del forward y el backward pass
     finalMatrix = []
-    # tabla de la actividades que viene por input para armar CP
+    # Tabla de la actividades que viene como argumento para calcular la ruta critica
     activitiesTable = []
-    # diccionario que enelaza cada letra con un numeropara hacer una especie de indexing
+    # Diccionario que enlaza cada letra con un numero para hacer una especie de indexing
     activities = {}
 
     def __init__(self, activitiesTable):
-        # se guardan las activdades como atributo del objeto para accesarla desde cualquier metodo
+        # Se guardan las actividades como atributo del objeto para acceder a ellas desde cualquier metodo
         self.activitiesTable = activitiesTable
 
-        # se incializa la matriz final (ES, EF, LS, LF)
+        # Se incializa la matriz final (ES, EF, LS, LF)
         for i in range(len(activitiesTable)):
             self.finalMatrix.append([0, 0, 999, 999])
 
-        # diccionario para obtener las key de cada actividad(es como una especie de indexing)
+        # Se construye el diccionario para obtener las key de cada actividad(es como una especie de indexing)
         # para obtener rapidamente el index de determinada letra
         cont = 0
         for key in activitiesTable:
             self.activities[key[0]] = cont
             cont += 1
 
-        # se inicializa la matriz para forward (es una matriz de adj)
+        # Se inicializa la matriz para el forward pass (es una matriz de adj)
         for i in range(len(self.activitiesTable)):
             self.adjMatrixForward.append([0]*len(self.activitiesTable))
 
-        # se llena la matriz del forward
+        # Se llena la matriz haciendo el forward pass
         for i in range(len(self.activitiesTable)):
             # Se verifica que no sea la primera actividad
             if self.activitiesTable[i][3][0] != '-':
-                # Si es la ultima actividad se marca la interseccion con ese mismo nodo es decir [G][G]
-                # para que haga la condicion de parada en el forward pass , de esta manera sabemos que hasta ahi llega el grafo
+
+                # Si es la ultima actividad se marca la interseccion con ese mismo nodo es decir [i][i]
+                # para que haga la condicion de parada en el forward pass, de esta manera sabemos que hasta ahi llega el grafo
                 if i == (len(self.activitiesTable)-1):
                     self.adjMatrixForward[i][i] = self.activitiesTable[i][2]
-                # Es una matriz de adj por lo tanto para hacer B primero tengo que hacer A
+
+                # Es una matriz de adj por lo tanto para hacer B primero tengo que hacer A,
                 # entonces la distancia o el arco entre A y B tiene como peso la duracion de A,
-                # pues es lo necesario para llegar a B
-                # entonces aqui va por cada requisito llenando esa interseccion
+                # pues es lo necesario para llegar a B. 
+
+                # Aqui va por cada requisito para empezar la actividad llenando esa interseccion
                 for j in self.activitiesTable[i][3]:
                     self.adjMatrixForward[self.activities[j]
                                           ][i] = self.activitiesTable[self.activities[j]][2]
 
-        # se inicializa la matriz para el backward
+        # Se inicializa la matriz para el backward pass
         for i in range(len(self.activitiesTable)):
             self.adjMatrixBackward.append([0]*len(self.activitiesTable))
-        # se llena la matrix para backward, simililar a la del foward
+
+        # Se llena la matriz para backward, simililar a la del foward
         for i in range(len(self.activitiesTable)):
-            # como se viene del final hacia a atras se marca la primera como fin del grafo
+            # Como se viene del final hacia atras se marca la primera como fin del grafo
             if i == 0:
                 self.adjMatrixBackward[i][i] = self.activitiesTable[i][2]
-            # si la actividad tiene requisito o precesor
+            # Si la actividad tiene requisito o predecesor
             if self.activitiesTable[i][3][0] != '-':
-                # verificar si es la actividad final
+                # Se verifica si es la actividad final
                 if i == 0:
-                    # se marca la actividad final
+                    # Se marca la actividad final
                     self.adjMatrixBackward[i][i] = self.activitiesTable[i][2]
 
                 # se guarda la duracion entre cada actividad
@@ -67,177 +71,126 @@ class CPM:
                                               ] = self.activitiesTable[self.activities[j]][2]
 
     def forwardPass(self):
-        # queue pa bfs
+        ''' Se hace el forward pass que consiste en calcular para cada actividad el early start 
+        y early finish '''
+
+        # Cola para aplicar bfs
         queue = []
-        # vector booleano
+        # Vector booleano para indicar los nodos visitados
         visited = [False]*len(self.adjMatrixForward)
-        # flag de la condicion de parada
+        # Flag de la condicion de parada
         stop = False
-        # auxiliar para recorrer el grafo
+        # Auxiliar para recorrer el grafo
         aux = 1
-        # forward pass
+
         # la condicion de parada es que haya llegado al ultimo nodo o actividad
-        # que lo marcamos en la iniclizacion
+        # que lo marcamos en la inicializacion
         while stop == False:
-            # si hay alguien en la cola desapilo
+            # Si hay alguien en la cola desencolo
             if queue:
                 aux = queue.pop(0)
-            #print('visito: '+str(aux))
+
             currentTime = 0
-            # se recorre la fila del nodo actual, para identificar sus sucesores
+            # Se recorre la fila del nodo actual, para identificar sus sucesores
             for h in range(len(self.adjMatrixForward[aux-1])):
                 if self.adjMatrixForward[aux-1][h] != 0:
-                    # en caso que sea el primer nodo sabemos EF y ES
+                    # En caso que sea el primer nodo sabemos EF y ES
                     if aux == 1:
-                        # ES 0
+                        # ES es 0
                         self.finalMatrix[aux-1][0] = 0
-                        # EF la duracion
+                        # EF es la duracion
                         self.finalMatrix[aux -
                                          1][1] = self.adjMatrixForward[aux-1][h]
 
-                    # se guarda la duracion de la actividad en current time
+                    # Se guarda la duracion de la actividad en current time
                     else:
                         currentTime = self.adjMatrixForward[aux-1][h]
-                    # se marca el nodo como visitado
+                    # Se marca el nodo como visitado
                     visited[aux-1] = True
-                    # se agregan a la queue los hijos del nodo actual
+                    # Se agregan a la cola los hijos del nodo actual
                     if visited[h] == False and h+1 not in queue:
                         queue.append(h+1)
 
-        # se vuelve a recorrer la fila para guardar EF y ES de sus predecesoras
+        # Se vuelve a recorrer la fila para guardar EF y ES de sus predecesores
             for i in range(len(self.adjMatrixForward[aux-1])):
-                # si el valor en la matriz de adyacencia en esa posición es distinto de cero (significa que la actividad es predecesora de la actual)
+                # Si la actividad es predecesora de la actividad actual
                 if self.adjMatrixForward[i][aux-1] != 0 and i != aux-1:
-                    # si el valor del nodo actual es distinto de 1
+                    # Si el valor del nodo actual no es 1
                     if aux != 1:
-                        # si el valor EF en la matriz fechas de la posición actual es mayor al guardado del ES en la matriz fechas para el nodo actual
+                        # Si el EF de la posicion actual es mayor que el ES del sucesor se actualiza el ES
                         if self.finalMatrix[i][1] > self.finalMatrix[aux-1][0]:
-                            # se guarda el valor como ES en la matriz fechas para el nodo actual
-                            self.finalMatrix[aux-1][0] = self.finalMatrix[i][1]
-                        # si el valor ES en la matriz fechas para la posicón actual + el tiempo actual guardado anteriormente es mayor al EF guardado del nodo actual
-                        if self.finalMatrix[i][1] + currentTime > self.finalMatrix[aux-1][1]:
-                            # se guarda el valor como EF en la matriz fechas para el nodo actual
-                            self.finalMatrix[aux -
-                                             1][1] = self.finalMatrix[i][1] + currentTime
-            #print('queue: '+str(queue))
-            if False not in visited:
-                stop = True
-
-        # queue pa bfs
-        queue = []
-        # vector booleano
-        visited = [False]*len(self.adjMatrixForward)
-        # flag de la condicion de parada
-        stop = False
-        # auxiliar para recorrer el grafo
-        aux = 1
-        # forward pass
-        # la condicion de parada es que haya llegado al ultimo nodo o actividad
-        # que lo marcamos en la iniclizacion
-        while stop == False:
-            # si hay alguien en la cola desapilo
-            if queue:
-                aux = queue.pop(0)
-            #print('visito: '+str(aux))
-            currentTime = 0
-            # se recorre la fila del nodo actual, para identificar sus sucesores es decir hacer el BFS
-            for h in range(len(self.adjMatrixForward[aux-1])):
-                if self.adjMatrixForward[aux-1][h] != 0:
-                    # en caso que sea el primer nodo sabemos EF y ES
-                    if aux == 1:
-                        # ES 0
-                        self.finalMatrix[aux-1][0] = 0
-                        # EF la duracion
-                        self.finalMatrix[aux -
-                                         1][1] = self.adjMatrixForward[aux-1][h]
-
-                    # se guarda la duracion de la actividad en current time
-                    else:
-                        currentTime = self.adjMatrixForward[aux-1][h]
-                    # se marca el nodo como visitado
-                    visited[aux-1] = True
-                    # se agregan a la queue los hijos del nodo actual
-                    if visited[h] == False and h+1 not in queue:
-                        queue.append(h+1)
-
-        # se vuelve a recorrer la fila para guardar EF y ES de sus sucesoras
-            for i in range(len(self.adjMatrixForward[aux-1])):
-                # si el valor en la matriz de adyacencia en esa posición es distinto de cero (significa que la actividad es sucesora de la actual)
-                if self.adjMatrixForward[i][aux-1] != 0 and i != aux-1:
-                    # si el valor del nodo actual es distinto de 1
-                    # estas operaciones son para las activdades sucesoras al nodo actual
-                    if aux != 1:
-                        # Si el EF de la actual es mayor que es ES de la sucesora se actualiza el ES
-                        if self.finalMatrix[i][1] > self.finalMatrix[aux-1][0]:
-                            # se guarda el valor como ES en la matriz fechas para el nodo actual
+                            # Se guarda el valor como ES en la matriz final para el nodo actual
                             self.finalMatrix[aux-1][0] = self.finalMatrix[i][1]
                         # Si el EF actual es menor que el ES + la duracion se actualiza el EF
                         if self.finalMatrix[i][1] + currentTime > self.finalMatrix[aux-1][1]:
-                            # se guarda el valor como EF en la matriz fechas para el nodo actual
+                            # Se guarda el valor como EF en la matriz final para el nodo actual
                             self.finalMatrix[aux -
                                              1][1] = self.finalMatrix[i][1] + currentTime
-            # condicion de parada
+
             if False not in visited:
                 stop = True
 
     def backwardPass(self):
-        # queue pa bfs
+        # Cola pa bfs
         queue = []
-        # vector booleano
+        # Vector booleano para marcar nodos visitados
         visited = [False]*len(self.adjMatrixBackward)
-        # flag de la condicion de parada
+        # Flag de la condicion de parada
         stop = False
-        # aux para recorrer el grafo
+        # Auxiliar para recorrer el grafo
         aux = len(self.activitiesTable)
 
         while stop == False:
-            # si hay alguien en la cola desapilo
+            # si hay alguien en la cola desencolo
             if queue:
                 aux = queue.pop(0)
-            #print('visito: '+str(aux))
+
             # Se realiza el recorrido BFS pero de atras hacia adelante
             for h in range(len(self.adjMatrixBackward[aux-1])):
                 if self.adjMatrixBackward[aux-1][h] != 0:
-                    # se setea el LS y EF del ultimo nodo que es igual a su ES y EF
+                    # Se setea el LS y EF del ultimo nodo que es igual a su ES y EF
                     if aux == len(self.activitiesTable):
                         self.finalMatrix[aux-1][2] = self.finalMatrix[aux-1][0]
                         self.finalMatrix[aux-1][3] = self.finalMatrix[aux-1][1]
-                    # se marca como visitado en el vector booleano
+                    # Se marca como visitado en el vector booleano
                     visited[aux-1] = True
-                    # se agregan a la queue los hijos del nodo actual, ccumpliendo con el bfs
+                    # Se agregan a la cola los hijos del nodo actual, cumpliendo con el bfs
                     if visited[h] == False and h+1 not in queue:
                         queue.append(h+1)
-            # se recorre la fila para guardar LS y LF de cada actividad predecesora en este caso
+
+            # Se recorre la fila para guardar LS y LF de cada actividad predecesora en este caso
             for i in range(len(self.adjMatrixForward[aux-1])):
-                # si la matriz en esa posicion tiene valor es porque esa actividad es precesora
+                # Si la matriz en esa posicion tiene valor es porque esa actividad es predecesora
                 if self.adjMatrixForward[aux-1][i] != 0 and i != aux-1:
-                    # si el nodo no es el último
+                    # Si el nodo no es el último
                     if aux != len(self.activitiesTable):
-                        # si el LF guardado actualmente  en la matriz final es menor que LS  se actualiza
+                        # Si el LF guardado actualmente  en la matriz final es menor que LS  se actualiza
                         if self.finalMatrix[i][2] < self.finalMatrix[aux-1][3] or self.finalMatrix[i][2] < self.finalMatrix[aux-1][2]:
-                            # se guarda el valor como LF en la matriz final  para este nodo
+                            # Se guarda el valor como LF en la matriz final  para este nodo
                             self.finalMatrix[aux-1][3] = self.finalMatrix[i][2]
-                        #se actualiza LS si es menor que la LF menos la duracion en el nodo actual
+                        # Se actualiza LS si es menor que la LF menos la duracion en el nodo actual
                         if self.finalMatrix[i][2] - self.adjMatrixForward[aux-1][i] < self.finalMatrix[aux-1][2]:
                             # se guarda el valor como LS en la matriz final  para el nodo actual
                             self.finalMatrix[aux-1][2] = self.finalMatrix[i][2] - \
                                 self.adjMatrixForward[aux-1][i]
-            #print('queue: '+str(queue))
-            # si todos los nodos han sido visited se termina el ciclo
+
+            # Si todos los nodos han sido visited se termina el ciclo
             if False not in visited:
                 stop = True
 
     def calculateCPM(self):
-      #paso hacia adelante
+      # Se hace el forward pass
         self.forwardPass()
-      #paso hacia atras
+      # Se hace el backward pass
         self.backwardPass()
-      #holguras
+
+      # Se calculan las holguras
         slacks = []
         for i in range(len(self.activitiesTable)):
             slack = self.finalMatrix[i][2] - self.finalMatrix[i][0]
             slacks.append([slack])
-      #dandole formato a la matriz final
+
+      # Se da formato a la matriz final
         for i in range(len(self.finalMatrix)):
             self.finalMatrix[i].insert(0, self.activitiesTable[i][2])
             self.finalMatrix[i].insert(0, self.activitiesTable[i][1])
