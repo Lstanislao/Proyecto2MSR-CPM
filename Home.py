@@ -1,12 +1,27 @@
 import os
 import sys
 
+
+arrayPredecesores = []
+
+
+def getUltimos():
+    array = []
+    for act in graph:
+        print(act[0])
+        if act[0] not in arrayPredecesores:
+            array.append(act[0])
+    array.remove('iZ1')
+    print('ULTIMOS', array)
+
+
 def clearConsole():
     '''Funcion para limpiar la consola'''
     command = 'clear'
     if os.name in ('nt', 'dos'):  # If Machine is running on Windows, use cls
         command = 'cls'
     os.system(command)
+
 
 def header():
     clearConsole()
@@ -27,14 +42,16 @@ def menu():
     print('[1] Comenzar\n')
     print('[0] Cerrar programa\n')
 
+
 graph = [["iZ1", "Nodo Origen", 0, ["-"]]]
+
 
 def askNumber(query, greater, error, less):
     ''' Se pide el input hasta que sea un numero mayor al valor indicado '''
     valid = False
     while not valid:
         n = input(query)
-        try: 
+        try:
             if int(n) >= greater:
                 if less == greater:
                     valid = True
@@ -53,16 +70,23 @@ def askNumber(query, greater, error, less):
 
     return int(n)
 
+
 def activities():
     ''' Se piden todas las actividades con su respectiva informacion '''
 
     # Se pide el numero de actividades hasta que se haya ingresado un numero mayor o igual a 2
-    quantity = askNumber('\nIngrese la cantidad de actividades que tendrá el grafo: ', 2, '\nDebe ingresar un numero mayor o igual a 2. Por favor, intente de nuevo', 2)
-  
+    quantity = askNumber('\nIngrese la cantidad de actividades que tendrá el grafo: ',
+                         2, '\nDebe ingresar un numero mayor o igual a 2. Por favor, intente de nuevo', 2)
+
     print('\nAhora hay que agregar todas las actividades. Solo podras agregar actividades cuyas actividades predecesoras ya hayan sido agregadas.\n')
 
     for i in range(int(quantity)):
         activity()
+    print(graph)
+    print("-----------------")
+    print(arrayPredecesores)
+    print("-----------------")
+    getUltimos()
 
     contadorFP = 0
     print('\n\n¡Su grafo esta listo!\n')
@@ -72,28 +96,34 @@ def activities():
                 contadorFP += 1
             print(graph[i])
     print('\n\n')
+
     return [graph, contadorFP]
+
 
 def activity():
     ''' Se pide una actividad con su identificador, descripcion, duracion y predecesores '''
 
     valid = False
-   
+
    # Se pide el identificador de la actividad hasta que sea uno repetido
     while not valid:
-        id = input('\nIngrese el identificador de la nueva actividad actividad. (Por ejemplo: "A", "b", "C", "1", "II", "3"\n')
+        id = input(
+            '\nIngrese el identificador de la nueva actividad actividad. (Por ejemplo: "A", "b", "C", "1", "II", "3"\n')
 
         valid = True
         for a in graph:
             if a[0] == id:
                 valid = False
-                print('\nEse identificador ya esta registrado, debe escoger uno diferente. Por favor, intente de nuevo')
+                print(
+                    '\nEse identificador ya esta registrado, debe escoger uno diferente. Por favor, intente de nuevo')
 
     # Se pide la descripcion de la actividad
-    description = input('\nIngrese la descripcion de la actividad. (Por ejemplo: "Limpiar ventanas", "Llevar el carro al taller", "Mezclar el azucar con los huevos"\n')
-    
+    description = input(
+        '\nIngrese la descripcion de la actividad. (Por ejemplo: "Limpiar ventanas", "Llevar el carro al taller", "Mezclar el azucar con los huevos"\n')
+
     # TODO: no se si poner >= 0 0 >= 1
-    value = askNumber('\nIngrese la duracion de la actividad: ', 1, '\nDebe ingresar un numero mayor o igual a 1. Por favor, intente de nuevo', 1)
+    value = askNumber('\nIngrese la duracion de la actividad: ', 1,
+                      '\nDebe ingresar un numero mayor o igual a 1. Por favor, intente de nuevo', 1)
 
     act = [id, description, int(value)]
 
@@ -105,14 +135,15 @@ def activity():
         # print('Esta es la primera actividad que estas agregando, asi que no tendra predecesor.\n')
         predecesor.append("iZ1")
         act.append(predecesor)
-        
+
     # De lo contrario se pregunta el numero de predecesores hasta que ingrese un numero entre 1 y num de actividades registradas
     else:
         count = askNumber('\n¿Cuántos predecesores tiene esta actividad?\nIngrese 0 si no posee predecesor. Solo hay {0} actividad(es) registrada(s)\n'.format(len(graph) - 1),
-                        0,
-                        '\nLa actividad debe tener un numero minimo de 0 y maximo {0} predecesor(es). Por favor, intente de nuevo'.format(len(graph) - 1), 
-                        len(graph) - 1)
-        
+                          0,
+                          '\nLa actividad debe tener un numero minimo de 0 y maximo {0} predecesor(es). Por favor, intente de nuevo'.format(
+                              len(graph) - 1),
+                          len(graph) - 1)
+
         if (count == 0):
             predecesor.append("iZ1")
             act.append(predecesor)
@@ -130,24 +161,25 @@ def activity():
 
                 # Mientras no se ingrese un identificador disponible (registrado y no repetido), se repite
                 while not valid:
-                    clearConsole()
+                    # clearConsole()
                     print('Ingrese el identificador que precede a esta actividad:\n')
                     print('Identificadores disponibles:\n')
                     print(preArray)
                     print('')
                     predecesorInput = input('\n')
-                    
                     if (predecesorInput not in preArray):
-                        print('\nEl identificador ingresado no esta entre las opciones posibles, por favor, intente de nuevo.\n')
+                        print(
+                            '\nEl identificador ingresado no esta entre las opciones posibles, por favor, intente de nuevo.\n')
                         valid = False
                     else:
+                        arrayPredecesores.append(predecesorInput)
                         valid = True
                         preArray.remove(predecesorInput)
-                
+
                 predecesor.append(predecesorInput)
 
             act.append(predecesor)
-    clearConsole()
+    # clearConsole()
     if len(graph) - 1 == 0:
         print('Esta es la primera actividad que estas agregando, asi que no tendra predecesor.\n')
     if (act[3] == ['iZ1']):
@@ -163,7 +195,7 @@ def activity():
     graph.append(act)
     print("\nSe ha registrado la actividad.")
 
-    
+
 def credits():
     print('\nProyecto 2 - Modelación de Sistemas en Redes')
     print('Profesor:')
@@ -187,4 +219,4 @@ def credits():
 # else:
 #    print('\n La opción ingresada no es válida, por favor, intente de nuevo \n')
 #    menu()
-#    start = input('\n') 
+#    start = input('\n')

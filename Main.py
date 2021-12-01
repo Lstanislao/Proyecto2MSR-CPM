@@ -28,11 +28,10 @@ main = [["A", "yolo", 2, ["-"]],
         ["E", "yolo", 5, ['A']],
         ["F", "yolo", 2, ['C', 'D']],
         ["G", "yolo", 2, ['F']],
-         ]
+        ]
 
 
 if __name__ == '__main__':
-
 
     header()
     menu()
@@ -40,6 +39,10 @@ if __name__ == '__main__':
     clearConsole()
     if start == '1':
         mainArray = activities()[0]
+        print(activities()[2])
+        print(activities()[3])
+        print(activities())
+
         print('\n\nMiraAca\n')
         print(mainArray)
         print('\n\n')
@@ -51,38 +54,35 @@ if __name__ == '__main__':
         # mas tempranos y tardios de inicio y fin
         finalTable = PrettyTable()
         finalTable.field_names = ["ID",
-                                "Description", "Duration", "Early Start", "Early Finish", "Late Start", "Late Finish"]
-        
+                                  "Description", "Duration", "Early Start", "Early Finish", "Late Start", "Late Finish"]
+
         # Se construye la tabla de resultados de las holguras de las actividades
         slackTable = PrettyTable()
         slackTable.field_names = ["ID",
-                                "Slack"]
+                                  "Slack"]
 
         # Se agregan a las tablas los resultados calculados
         slackTable.add_rows(results['slacks'])
         finalTable.add_rows(results['finalTable'])
 
-        # Se muestra la tabla con los dias mas tempranos y tardios de inicio y fin de 
+        # Se muestra la tabla con los dias mas tempranos y tardios de inicio y fin de
         # las actividades
         print(finalTable)
 
         # TODO: mostrar ruta critica
 
         # Se muestran las actividades con su respectiva holgura
-        print(slackTable)       
-    
-    
+        print(slackTable)
+
     elif start == '0':
         credits()
-    
-    
+
     else:
         clearConsole()
         header()
         print('\n La opción ingresada no es válida, por favor, intente de nuevo \n')
         menu()
-        start = input('\n') 
-
+        start = input('\n')
 
     # project = CPM(main)
     # results = project.calculateCPM()
@@ -92,7 +92,7 @@ if __name__ == '__main__':
     # finalTable = PrettyTable()
     # finalTable.field_names = ["ID",
     #                           "Description", "Duration", "Early Start", "Early Finish", "Late Start", "Late Finish"]
-    
+
     # # Se construye la tabla de resultados de las holguras de las actividades
     # slackTable = PrettyTable()
     # slackTable.field_names = ["ID",
@@ -102,7 +102,7 @@ if __name__ == '__main__':
     # slackTable.add_rows(results['slacks'])
     # finalTable.add_rows(results['finalTable'])
 
-    # # Se muestra la tabla con los dias mas tempranos y tardios de inicio y fin de 
+    # # Se muestra la tabla con los dias mas tempranos y tardios de inicio y fin de
     # # las actividades
     # print(finalTable)
 
