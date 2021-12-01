@@ -6,6 +6,7 @@ from prettytable import PrettyTable
 from pyfiglet import Figlet
 
 from CPM import CPM
+from Home import header, menu, activities, credits
 
 
 def clearConsole():
@@ -31,31 +32,81 @@ main = [["A", "yolo", 2, ["-"]],
 
 
 if __name__ == '__main__':
-    project = CPM(main)
-    results = project.calculateCPM()
 
-    # Se construye la tabla de resultados despues del forward y backward pass con los dias
-    # mas tempranos y tardios de inicio y fin
-    finalTable = PrettyTable()
-    finalTable.field_names = ["ID",
-                              "Description", "Duration", "Early Start", "Early Finish", "Late Start", "Late Finish"]
+
+    header()
+    menu()
+    start = input('\n')
+    clearConsole()
+    if start == '1':
+        mainArray = activities()[0]
+        print('\n\nMiraAca\n')
+        print(mainArray)
+        print('\n\n')
+
+        project = CPM(mainArray)
+        results = project.calculateCPM()
+
+        # Se construye la tabla de resultados despues del forward y backward pass con los dias
+        # mas tempranos y tardios de inicio y fin
+        finalTable = PrettyTable()
+        finalTable.field_names = ["ID",
+                                "Description", "Duration", "Early Start", "Early Finish", "Late Start", "Late Finish"]
+        
+        # Se construye la tabla de resultados de las holguras de las actividades
+        slackTable = PrettyTable()
+        slackTable.field_names = ["ID",
+                                "Slack"]
+
+        # Se agregan a las tablas los resultados calculados
+        slackTable.add_rows(results['slacks'])
+        finalTable.add_rows(results['finalTable'])
+
+        # Se muestra la tabla con los dias mas tempranos y tardios de inicio y fin de 
+        # las actividades
+        print(finalTable)
+
+        # TODO: mostrar ruta critica
+
+        # Se muestran las actividades con su respectiva holgura
+        print(slackTable)       
     
-    # Se construye la tabla de resultados de las holguras de las actividades
-    slackTable = PrettyTable()
-    slackTable.field_names = ["ID",
-                              "Slack"]
+    
+    elif start == '0':
+        credits()
+    
+    
+    else:
+        clearConsole()
+        header()
+        print('\n La opción ingresada no es válida, por favor, intente de nuevo \n')
+        menu()
+        start = input('\n') 
 
-    # Se agregan a las tablas los resultados calculados
-    slackTable.add_rows(results['slacks'])
-    finalTable.add_rows(results['finalTable'])
 
-    # Se muestra la tabla con los dias mas tempranos y tardios de inicio y fin de 
-    # las actividades
-    print(finalTable)
+    # project = CPM(main)
+    # results = project.calculateCPM()
 
-    # TODO: mostrar ruta critica
+    # # Se construye la tabla de resultados despues del forward y backward pass con los dias
+    # # mas tempranos y tardios de inicio y fin
+    # finalTable = PrettyTable()
+    # finalTable.field_names = ["ID",
+    #                           "Description", "Duration", "Early Start", "Early Finish", "Late Start", "Late Finish"]
+    
+    # # Se construye la tabla de resultados de las holguras de las actividades
+    # slackTable = PrettyTable()
+    # slackTable.field_names = ["ID",
+    #                           "Slack"]
 
-    # Se muestran las actividades con su respectiva holgura
-    print(slackTable)
+    # # Se agregan a las tablas los resultados calculados
+    # slackTable.add_rows(results['slacks'])
+    # finalTable.add_rows(results['finalTable'])
 
-sys.exit(0)
+    # # Se muestra la tabla con los dias mas tempranos y tardios de inicio y fin de 
+    # # las actividades
+    # print(finalTable)
+
+    # # TODO: mostrar ruta critica
+
+    # # Se muestran las actividades con su respectiva holgura
+    # print(slackTable)
