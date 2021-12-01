@@ -28,7 +28,7 @@ class CPM:
 
         # Se inicializa la matriz para el forward pass (es una matriz de adj)
         for i in range(len(self.activitiesTable)):
-            self.adjMatrixForward.append([0]*len(self.activitiesTable))
+            self.adjMatrixForward.append([-1]*len(self.activitiesTable))
 
         # Se llena la matriz haciendo el forward pass
         for i in range(len(self.activitiesTable)):
@@ -51,7 +51,7 @@ class CPM:
 
         # Se inicializa la matriz para el backward pass
         for i in range(len(self.activitiesTable)):
-            self.adjMatrixBackward.append([0]*len(self.activitiesTable))
+            self.adjMatrixBackward.append([-1]*len(self.activitiesTable))
 
         # Se llena la matriz para backward, simililar a la del foward
         for i in range(len(self.activitiesTable)):
@@ -93,7 +93,7 @@ class CPM:
             currentTime = 0
             # Se recorre la fila del nodo actual, para identificar sus sucesores
             for h in range(len(self.adjMatrixForward[aux-1])):
-                if self.adjMatrixForward[aux-1][h] != 0:
+                if self.adjMatrixForward[aux-1][h] != -1:
                     # En caso que sea el primer nodo sabemos EF y ES
                     if aux == 1:
                         # ES es 0
@@ -115,7 +115,7 @@ class CPM:
             # los datos de sus predecesores
             for i in range(len(self.adjMatrixForward[aux-1])):
                 # Si la actividad es predecesora de la actividad actual
-                if self.adjMatrixForward[i][aux-1] != 0 and i != aux-1:
+                if self.adjMatrixForward[i][aux-1] != -1 and i != aux-1:
                     # Si el valor del nodo actual no es 1
                     if aux != 1:
                         # Si el ES de la posicion actual es menor que el EF del predecesor se actualiza el ES
@@ -151,7 +151,7 @@ class CPM:
 
             # Se realiza el recorrido BFS pero de atras hacia adelante
             for h in range(len(self.adjMatrixBackward[aux-1])):
-                if self.adjMatrixBackward[aux-1][h] != 0:
+                if self.adjMatrixBackward[aux-1][h] != -1:
                     # Se setea el LS y EF del ultimo nodo que es igual a su ES y EF
                     if aux == len(self.activitiesTable):
                         self.finalMatrix[aux-1][2] = self.finalMatrix[aux-1][0]
@@ -166,7 +166,7 @@ class CPM:
             # los datos de sus sucesores
             for i in range(len(self.adjMatrixForward[aux-1])):
                 # Si la matriz en esa posicion tiene valor es porque esa actividad es sucesora
-                if self.adjMatrixForward[aux-1][i] != 0 and i != aux-1:
+                if self.adjMatrixForward[aux-1][i] != -1 and i != aux-1:
                     # Si el nodo no es el último
                     if aux != len(self.activitiesTable):
                         # Si el LF guardado actualmente en la matriz final es menor que LS del sucesor se actualiza
@@ -203,4 +203,4 @@ class CPM:
 
             slacks[i].insert(0, self.activitiesTable[i][0])
 
-        return {'finalTable': self.finalMatrix, "slacks": slacks}
+        return {'finalTable': self.finalMatrix[1:len(self.finalMatrix) - 1], "slacks": slacks[1: len(slacks) - 1]}

@@ -188,3 +188,6 @@ def credits():
 #    print('\n La opción ingresada no es válida, por favor, intente de nuevo \n')
 #    menu()
 #    start = input('\n') 
+
+a = [1,2,3,4,5,6]
+print(a[1:len(a)-1])
