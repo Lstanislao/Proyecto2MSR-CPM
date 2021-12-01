@@ -111,13 +111,14 @@ class CPM:
                     if visited[h] == False and h+1 not in queue:
                         queue.append(h+1)
 
-        # Se vuelve a recorrer la fila para guardar EF y ES de sus predecesores
+            # Se vuelve a recorrer la fila para guardar EF y ES del nodo actual tomando en cuenta 
+            # los datos de sus predecesores
             for i in range(len(self.adjMatrixForward[aux-1])):
                 # Si la actividad es predecesora de la actividad actual
                 if self.adjMatrixForward[i][aux-1] != 0 and i != aux-1:
                     # Si el valor del nodo actual no es 1
                     if aux != 1:
-                        # Si el EF de la posicion actual es mayor que el ES del sucesor se actualiza el ES
+                        # Si el ES de la posicion actual es menor que el EF del predecesor se actualiza el ES
                         if self.finalMatrix[i][1] > self.finalMatrix[aux-1][0]:
                             # Se guarda el valor como ES en la matriz final para el nodo actual
                             self.finalMatrix[aux-1][0] = self.finalMatrix[i][1]
@@ -131,6 +132,9 @@ class CPM:
                 stop = True
 
     def backwardPass(self):
+        ''' Se hace el backward pass que consiste en calcular para cada actividad el late start 
+        y late finish '''
+
         # Cola pa bfs
         queue = []
         # Vector booleano para marcar nodos visitados
@@ -158,19 +162,20 @@ class CPM:
                     if visited[h] == False and h+1 not in queue:
                         queue.append(h+1)
 
-            # Se recorre la fila para guardar LS y LF de cada actividad predecesora en este caso
+            # Se recorre la fila para guardar LS y LF del nodo actual tomando en cuenta 
+            # los datos de sus sucesores
             for i in range(len(self.adjMatrixForward[aux-1])):
-                # Si la matriz en esa posicion tiene valor es porque esa actividad es predecesora
+                # Si la matriz en esa posicion tiene valor es porque esa actividad es sucesora
                 if self.adjMatrixForward[aux-1][i] != 0 and i != aux-1:
                     # Si el nodo no es el último
                     if aux != len(self.activitiesTable):
-                        # Si el LF guardado actualmente  en la matriz final es menor que LS  se actualiza
+                        # Si el LF guardado actualmente en la matriz final es menor que LS del sucesor se actualiza
                         if self.finalMatrix[i][2] < self.finalMatrix[aux-1][3] or self.finalMatrix[i][2] < self.finalMatrix[aux-1][2]:
-                            # Se guarda el valor como LF en la matriz final  para este nodo
+                            # Se guarda el valor como LF en la matriz final para este nodo
                             self.finalMatrix[aux-1][3] = self.finalMatrix[i][2]
                         # Se actualiza LS si es menor que la LF menos la duracion en el nodo actual
                         if self.finalMatrix[i][2] - self.adjMatrixForward[aux-1][i] < self.finalMatrix[aux-1][2]:
-                            # se guarda el valor como LS en la matriz final  para el nodo actual
+                            # se guarda el valor como LS en la matriz final para el nodo actual
                             self.finalMatrix[aux-1][2] = self.finalMatrix[i][2] - \
                                 self.adjMatrixForward[aux-1][i]
 
