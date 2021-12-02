@@ -8,7 +8,6 @@ arrayPredecesores = []
 def getUltimos():
     array = []
     for act in graph:
-        print(act[0])
         if act[0] not in arrayPredecesores:
             array.append(act[0])
     array.remove('iZ1')
@@ -82,22 +81,12 @@ def activities():
 
     for i in range(int(quantity)):
         activity()
-    # print(graph)
-    # print("-----------------")
-    # print(arrayPredecesores)
-    # print("-----------------")
     ultimos = getUltimos()
     graph.append(["jA2", "Nodo Final", 0, ultimos])
     contadorFP = 0
     contadorBP = len(ultimos)
     print('\n\n¡Su grafo esta listo!\n')
-    for i in range(len(graph)):
-        if (i != 0 or i != (len(graph) - 1)):
-            if graph[i][3] == ['iZ1']:
-                contadorFP += 1
-            print(graph[i])
-    print('\n\n')
-    return [graph, contadorFP]
+    return [graph, contadorFP, contadorBP]
 
 def activity():
     ''' Se pide una actividad con su identificador, descripcion, duracion y predecesores '''
@@ -160,7 +149,7 @@ def activity():
 
                 # Mientras no se ingrese un identificador disponible (registrado y no repetido), se repite
                 while not valid:
-                    # clearConsole()
+                    clearConsole()
                     print('Ingrese el identificador que precede a esta actividad:\n')
                     print('Identificadores disponibles:\n')
                     print(preArray)
@@ -178,7 +167,7 @@ def activity():
                 predecesor.append(predecesorInput)
 
             act.append(predecesor)
-    # clearConsole()
+    clearConsole()
     if len(graph) - 1 == 0:
         print('Esta es la primera actividad que estas agregando, asi que no tendra predecesor.\n')
     if (act[3] == ['iZ1']):
@@ -205,17 +194,3 @@ def credits():
     print('     -> Luis Stanislao')
     print('\nProyecto 2 finalizado\n')
     sys.exit(0)
-
-
-# header()
-# menu()
-# start = input('\n')
-# clearConsole()
-# if start == '1':
-#     activities()
-# elif start == '0':
-#     credits()
-# else:
-#    print('\n La opción ingresada no es válida, por favor, intente de nuevo \n')
-#    menu()
-#    start = input('\n')
