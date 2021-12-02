@@ -109,7 +109,6 @@ def activity():
     description = input(
         '\nIngrese la descripcion de la actividad. (Por ejemplo: "Limpiar ventanas", "Llevar el carro al taller", "Mezclar el azucar con los huevos"\n')
 
-    # TODO: no se si poner >= 0 0 >= 1
     value = askNumber('\nIngrese la duracion de la actividad: ', 1,
                       '\nDebe ingresar un numero mayor o igual a 1. Por favor, intente de nuevo', 1)
 

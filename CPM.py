@@ -186,7 +186,11 @@ class CPM:
     def calculateCPM(self):
       # Se hace el forward pass
         self.forwardPass()
+        self.forwardPass()
+
+        
       # Se hace el backward pass
+        self.backwardPass()
         self.backwardPass()
 
       # Se calculan las holguras
