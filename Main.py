@@ -47,7 +47,11 @@ if __name__ == '__main__':
         print(mainArray)
         print('\n\n')
 
-        project = CPM(mainArray)
+        # TODO: en el nodo final habria que agregarles los nodos sin sucesores, que serian los que no son predecesores de nadie
+
+        # project = CPM(mainArray)
+        # project = CPM([['iZ1', 'Nodo Origen', 0, ['-']], ['a', 'gg', 2, ['iZ1']], ['b', 'jj', 3, ['a']], ['e', 'rr', 5, ['a']], ['c', 'hh', 1, ['b', 'e']], ['d', 'uu', 3, ['e']], ['f', 'gg', 2, ['c', 'd']], ['g', 'ff', 2, ['f']], ['fz1', 'ff', 0, ['g']]])
+        project = CPM([['iZ1', 'Nodo Origen', 0, ['-']], ['a', 'gg', 2, ['iZ1']], ['b', 'jj', 5, ['iZ1']], ['c', 'hh', 4, ['a']], ['d', 'uu', 6, ['b', 'c']], ['e', 'rr', 3, ['d']], ['f', 'gg', 8, ['e']], ['g', 'ff', 10, ['e']], ['fz1', 'ff', 0, ['f', 'g']]])
         results = project.calculateCPM()
 
         # Se construye la tabla de resultados despues del forward y backward pass con los dias
@@ -69,7 +73,19 @@ if __name__ == '__main__':
         # las actividades
         print(finalTable)
 
-        # TODO: mostrar ruta critica
+        # Se muestran las actividades de la ruta critica
+        s = results['slacks']
+        a = ""
+        for i in range(len(s)):
+            if s[i][1] == 0:
+                if i == 0:
+                    a += s[i][0]
+                else:
+                    a += ', ' + s[i][0]
+
+        # print(results['slacks'])
+
+        print("\nLas actividades de la ruta critica son: {0}\n".format(a))
 
         # Se muestran las actividades con su respectiva holgura
         print(slackTable)
