@@ -6,7 +6,7 @@ from prettytable import PrettyTable
 from pyfiglet import Figlet
 
 from CPM import CPM
-from Home import header, menu, activities, credits, askNumber
+from Home import header, menu, activities, credits
 
 
 def clearConsole():
@@ -26,9 +26,6 @@ if __name__ == '__main__':
         mainArray = activities()[0]
 
         project = CPM(mainArray)
-        # project = CPM([['iZ1', 'Nodo Origen', 0, ['-']], ['a', 'dd', 3, ['iZ1']], ['b', 'ff', 4, ['a']], ['c', 'ff', 2, ['a']], ['d', 'ee', 5, ['b']], ['e', 'dd', 1, ['c']], ['f', 'ff', 2, ['c']], ['g', 'ff', 4, ['d', 'e']], ['h', 'dd', 3, ['f', 'g']], ['jA2', 'Nodo Final', 0, ['h']]])
-        # project = CPM([['iZ1', 'Nodo Origen', 0, ['-']], ['a', 'gg', 2, ['iZ1']], ['b', 'jj', 3, ['a']], ['e', 'rr', 5, ['a']], ['c', 'hh', 1, ['b', 'e']], ['d', 'uu', 3, ['e']], ['f', 'gg', 2, ['c', 'd']], ['g', 'ff', 2, ['f']], ['fz1', 'ff', 0, ['g']]])
-        # project = CPM([['iZ1', 'Nodo Origen', 0, ['-']], ['a', 'gg', 2, ['iZ1']], ['b', 'jj', 5, ['iZ1']], ['c', 'hh', 4, ['a']], ['d', 'uu', 6, ['b', 'c']], ['e', 'rr', 3, ['d']], ['f', 'gg', 8, ['e']], ['g', 'ff', 10, ['e']], ['fz1', 'ff', 0, ['f', 'g']]])
         results = project.calculateCPM()
 
         # Se construye la tabla de resultados despues del forward y backward pass con los dias
