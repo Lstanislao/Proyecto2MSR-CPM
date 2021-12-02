@@ -12,7 +12,7 @@ def getUltimos():
         if act[0] not in arrayPredecesores:
             array.append(act[0])
     array.remove('iZ1')
-    print('ULTIMOS', array)
+    return array
 
 
 def clearConsole():
@@ -82,23 +82,22 @@ def activities():
 
     for i in range(int(quantity)):
         activity()
-    print(graph)
-    print("-----------------")
-    print(arrayPredecesores)
-    print("-----------------")
-    getUltimos()
-
+    # print(graph)
+    # print("-----------------")
+    # print(arrayPredecesores)
+    # print("-----------------")
+    ultimos = getUltimos()
+    graph.append(["jA2", "Nodo Final", 0, ultimos])
     contadorFP = 0
+    contadorBP = len(ultimos)
     print('\n\n¡Su grafo esta listo!\n')
     for i in range(len(graph)):
-        if (i != 0):
+        if (i != 0 or i != (len(graph) - 1)):
             if graph[i][3] == ['iZ1']:
                 contadorFP += 1
             print(graph[i])
     print('\n\n')
-
     return [graph, contadorFP]
-
 
 def activity():
     ''' Se pide una actividad con su identificador, descripcion, duracion y predecesores '''

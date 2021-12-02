@@ -39,9 +39,9 @@ if __name__ == '__main__':
     clearConsole()
     if start == '1':
         mainArray = activities()[0]
-        print(activities()[2])
-        print(activities()[3])
-        print(activities())
+        # print(activities()[2])
+        # print(activities()[3])
+        # print(activities())
 
         print('\n\nMiraAca\n')
         print(mainArray)
